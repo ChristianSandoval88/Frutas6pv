@@ -1,0 +1,29 @@
+report = new com.openbravo.pos.reports.PanelReportBean();
+
+report.setTitleKey("Menu.Ventas");
+report.setReport("/com/openbravo/reports/ventas");
+report.setResourceBundle("com/openbravo/reports/ventas_messages");
+
+report.setSentence("SELECT PRODUCTS.NAME AS NOMBRE,SUM(TICKETLINES.UNITS) AS UNIDADES,SUM(TICKETLINES.UNITS*PRODUCTS.PRICEBUY) AS PRECIOCOMPRA, SUM(TICKETLINES.UNITS*TICKETLINES.PRICE) AS TOTAL,SUM(TICKETLINES.UNITS*TICKETLINES.PRICE) - SUM(TICKETLINES.UNITS*PRODUCTS.PRICEBUY) AS UTILIDAD,((SUM(TICKETLINES.UNITS*TICKETLINES.PRICE) - SUM(TICKETLINES.UNITS*PRODUCTS.PRICEBUY))/SUM(TICKETLINES.UNITS*PRODUCTS.PRICEBUY))*100 AS GANANCIA, PEOPLE.NAME AS SUCURSAL FROM TICKETS,RECEIPTS,PRODUCTS,PAYMENTS,TICKETLINES,PEOPLE WHERE TICKETS.PERSON=PEOPLE.ID AND PAYMENTS.RECEIPT = RECEIPTS.ID AND TICKETLINES.PRODUCT = PRODUCTS.ID AND TICKETLINES.TICKET = TICKETS.ID AND TICKETS.ID = RECEIPTS.ID AND ?(QBF_FILTER) GROUP BY TICKETLINES.PRODUCT, PRODUCTS.NAME, PEOPLE.NAME");
+report.addParameter("RECEIPTS.DATENEW");
+report.addParameter("RECEIPTS.DATENEW");
+report.addQBFFilter(new com.openbravo.pos.reports.JParamsDatesInterval());
+
+report.addParameter("PRODUCTS.NAME");
+report.addParameter("PRODUCTS.PRICEBUY");
+report.addParameter("PRODUCTS.PRICESELL");
+report.addParameter("PRODUCTS.CATEGORY");
+report.addParameter("PRODUCTS.CODE");
+report.addQBFFilter(new com.openbravo.pos.ticket.ProductFilter());
+
+report.addParameter("PEOPLE.ID");
+report.addQBFFilter(new com.openbravo.pos.reports.JParamsLocationWithFirst());
+
+report.addField("NAME", com.openbravo.data.loader.Datas.STRING);
+report.addField("UNIDADES", com.openbravo.data.loader.Datas.DOUBLE);
+report.addField("PRECIOCOMPRA", com.openbravo.data.loader.Datas.DOUBLE);
+report.addField("TOTAL", com.openbravo.data.loader.Datas.DOUBLE);
+report.addField("UTILIDAD", com.openbravo.data.loader.Datas.DOUBLE);
+report.addField("PORCENTAJE", com.openbravo.data.loader.Datas.DOUBLE);
+report.addField("SUCURSAL", com.openbravo.data.loader.Datas.STRING);
+report;

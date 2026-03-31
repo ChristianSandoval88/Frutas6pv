@@ -1,0 +1,22 @@
+report = new com.openbravo.pos.reports.PanelReportBean();
+
+report.setTitleKey("Menu.Cajon2");
+report.setReport("/com/openbravo/reports/cajon");
+report.setResourceBundle("com/openbravo/reports/cajon_messages");
+
+report.setSentence("SELECT RECEIPTS.DATENEW AS FECHA, "+
+"CASE WHEN PAYMENTS.PAYMENT='cash' THEN 'EFECTIVO' WHEN PAYMENTS.PAYMENT='debt' THEN 'A CREDITO' "+
+"WHEN PAYMENTS.PAYMENT='debtpaid' THEN 'PAGO CREDITO' WHEN PAYMENTS.PAYMENT='debtpaid2' THEN 'DEV CREDITO' "+
+"WHEN PAYMENTS.PAYMENT='cashrefund' THEN 'DEV EFECTIVO' END AS PAGO, "+
+"PAYMENTS.TOTAL AS TOTAL, PEOPLE.NAME AS USUARIO, CUSTOMERS.NAME AS CLIENTE "+
+"FROM RECEIPTS JOIN PAYMENTS ON RECEIPTS.ID=PAYMENTS.RECEIPT "+
+"JOIN TICKETS ON RECEIPTS.ID=TICKETS.ID JOIN PEOPLE ON PEOPLE.ID=TICKETS.PERSON "+
+"JOIN CUSTOMERS ON TICKETS.CUSTOMER=CUSTOMERS.ID ");
+
+report.addParameter("RECEIPTS.DATENEW");
+report.addParameter("RECEIPTS.DATENEW");
+report.addQBFFilter(new com.openbravo.pos.reports.JParamsDatesInterval());
+
+report.addField("FECHA", com.openbravo.data.loader.Datas.STRING);
+report.addField("USUARIO", com.openbravo.data.loader.Datas.STRING);
+report;

@@ -1,0 +1,28 @@
+report = new com.openbravo.pos.reports.PanelReportBean();
+
+report.setTitleKey("Menu.PedidosInventario");
+report.setReport("/com/openbravo/reports/pedidosinventario");
+report.setResourceBundle("com/openbravo/reports/inventario_messages");
+
+report.setSentence("SELECT S.DATENEW,P.NAME,S.UNITS,S.INVENTARIO,S.MIN,S.MAX,PE.NAME AS USUARIO FROM STOCKREQUEST S JOIN PRODUCTS P ON S.PRODUCT=P.ID JOIN PEOPLE PE ON S.USUARIO=PE.ID WHERE ?(QBF_FILTER) ORDER BY S.DATENEW");
+
+report.addParameter("P.NAME");
+report.addParameter("P.PRICEBUY");
+report.addParameter("P.PRICESELL");
+report.addParameter("P.CATEGORY");
+report.addParameter("P.CODE");
+report.addQBFFilter(new com.openbravo.pos.ticket.ProductFilter());
+
+report.addParameter("S.DATENEW");
+report.addParameter("S.DATENEW");
+report.addQBFFilter(new com.openbravo.pos.reports.JParamsDatesInterval());
+
+report.addField("DATENEW", com.openbravo.data.loader.Datas.TIMESTAMP);
+report.addField("NAME", com.openbravo.data.loader.Datas.STRING);
+report.addField("UNITS", com.openbravo.data.loader.Datas.DOUBLE);
+report.addField("INVENTARIO", com.openbravo.data.loader.Datas.DOUBLE);
+report.addField("MIN", com.openbravo.data.loader.Datas.DOUBLE);
+report.addField("MAX", com.openbravo.data.loader.Datas.DOUBLE);
+report.addField("USUARIO", com.openbravo.data.loader.Datas.STRING);
+
+report;
