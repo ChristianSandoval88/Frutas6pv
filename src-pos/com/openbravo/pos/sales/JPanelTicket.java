@@ -24,6 +24,7 @@ import com.openbravo.data.loader.SentenceList;
 import com.openbravo.data.loader.SerializerWriteBasic;
 import com.openbravo.data.loader.SerializerWriteParams;
 import com.openbravo.data.loader.StaticSentence;
+import com.openbravo.format.Formats;
 import com.openbravo.pos.customers.CustomerInfoExt;
 import com.openbravo.pos.customers.DataLogicCustomers;
 import com.openbravo.pos.customers.JCustomerFinder;
@@ -439,8 +440,8 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
             // Producto normal, entonces al finalnewline.getMultiply() 
             m_oTicket.addLine(oLine);
             m_ticketlines.addTicketLine(oLine); // Pintamos la linea en la vista... 
-            //}
 
+            //}
             visorTicketLine(oLine);
             printPartialTotals();
             stateToZero();
@@ -614,6 +615,9 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
         } else {
             // No es un producto que se pese o no hay balanza
             incProduct(1.0, prod);
+            if (prod.getName().equalsIgnoreCase("prestamo")) {
+                Editar();
+            }
         }
     }
 
@@ -1128,6 +1132,37 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
 
     private boolean closeTicket(TicketInfo ticket, Object ticketext) {
         boolean resultok = false;
+        for (int i = 0; i < ticket.getLinesCount(); i++) {
+            if (ticket.getLine(i).getProductName().equalsIgnoreCase("prestamo") && ticket.getLinesCount() > 1) {
+                JOptionPane.showMessageDialog(this, "Para realizar un prestamo debe seleccionar un cliente _empleado y solamente marcar el producto prestamo. NO se realizó la venta.");
+                return false;
+            }
+        }
+        if ((ticket.getCustomer() == null || !ticket.getCustomer().getName().toLowerCase().contains("empleado"))
+                && ticket.getLine(0).getProductName().equalsIgnoreCase("prestamo")) {
+            JOptionPane.showMessageDialog(this, "Para realizar un prestamo debe seleccionar un cliente _empleado. NO se realizó la venta.");
+            return false;
+        }
+
+        if (ticket.getCustomer() != null && ticket.getCustomer().getName().toLowerCase().contains("empleado")
+                && ticket.getLinesCount() > 1) {
+            JOptionPane.showMessageDialog(this, "Para realizar un prestamo NO debe haber más productos capturados, favor de validar. NO se realizó la venta.");
+            return false;
+        }
+        if (ticket.getCustomer() != null && ticket.getCustomer().getName().toLowerCase().contains("empleado")
+                && !ticket.getLine(0).getProductName().equalsIgnoreCase("prestamo")) {
+            JOptionPane.showMessageDialog(this, "Para realizar un prestamo a un cliente _empleado seleccione el producto prestamo. NO se realizó la venta.");
+            return false;
+        }
+        for (int i = 0; i < ticket.getLinesCount(); i++) {
+            if (ticket.getLine(i).getProductName().equalsIgnoreCase("prestamo")) {
+                if (ticket.getCustomer() == null || !ticket.getCustomer().getName().toLowerCase().contains("empleado")) {
+                    JOptionPane.showMessageDialog(this, "Para realizar un prestamo debe seleccionar un cliente _empleado, favor de validar. NO se realizó la venta.");
+                    return false;
+                }
+            }
+        }
+
         if (m_App.getAppUserView().getUser().hasPermission("sales.Total")) {
 
             try {
@@ -1182,7 +1217,12 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
                                     ticket.setProperty("metodoPago", "Transferencia");
                                 }
                             }
-
+                                if ((ticket.getLine(0).getProductName().equalsIgnoreCase("prestamo") &&
+                                        !((PaymentInfo) ticket.getPayments().get(0)).getName().equalsIgnoreCase("debt")||
+                                        ticket.getPayments().size()>1)) {
+                                    JOptionPane.showMessageDialog(this, "Para realizar un prestamo debe seleccionar A cuenta como metodo de pago. NO se realizó la venta.");
+                                    return false;
+                                }
                         }
                         /*ticket.setPayments(paymentdialog.getSelectedPayments());
                             if (TicketInfo.RECEIPT_NORMAL!=ticket.getTicketType()
@@ -1219,6 +1259,27 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
                                     printTicket("Printer.Ticket", ticket, ticketext);
                                 }
 
+                                if (ticket.getLine(0).getProductName().equalsIgnoreCase("prestamo")&&ticket.getCustomer().getName().toLowerCase().contains("empleado")) {
+                                    String uuid=UUID.randomUUID().toString();
+                                    dlSales.getPaymentMovementInsert2().exec(new DataParams() {
+                                        public void writeValues() throws BasicException {
+                                            setString(1, uuid);
+                                            setString(2, dlSales.getActiveCash(config.getProperty("machine.hostname")));
+                                            setTimestamp(3, new Date());
+                                        }   
+                                    });
+                                    dlSales.getPaymentMovementInsert3().exec(new DataParams() {
+                                        public void writeValues() throws BasicException {
+                                            setString(1, UUID.randomUUID().toString());
+                                            setString(2, uuid);
+                                            setString(3, "cashout");
+                                            setDouble(4, ticket.getTotal()*-1.00);
+                                            setString(5, "Prestamo "+ticket.getCustomer().getName());
+                                        }   
+                                    });
+                                    printTicket("Printer.Foo", Formats.CURRENCY.formatValue(ticket.getTotal()*-1.00), "Prestamo", "Prestamo "+ticket.getCustomer().getName(), 
+                                            this.m_App.getAppUserView().getUser().getName(), config.getProperty("machine.hostname"));
+                                }
                                 if (ticket.getTicketType() == TicketInfo.RECEIPT_REFUND && m_oTicket2 != null) {
                                     dlSales.getTicketEditadoUpdate().exec(new DataParams() {
                                         public void writeValues() throws BasicException {
@@ -1257,7 +1318,30 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
         // or canceled the ticket.close script
         return resultok;
     }
-
+    private void printTicket(String resname, String monto, String tipo, String notas, String usuario, String caja) {
+        String resource = dlSystem.getResourceAsXML(resname);
+        if (resource == null) {
+          MessageInf msg = new MessageInf(-33554432, AppLocal.getIntString("message.cannotprintticket"));
+          msg.show(this);
+        } else {
+          try {
+            ScriptEngine script = ScriptFactory.getScriptEngine("velocity");
+            script.put("monto", monto);
+            script.put("tipo", tipo);
+            script.put("notas", notas);
+            script.put("fecha", Formats.TIMESTAMP.formatValue(new Date()));
+            script.put("usuario", usuario);
+            script.put("caja", caja);
+            m_TTP.printTicket(script.eval(resource).toString());
+          } catch (ScriptException e) {
+            MessageInf msg = new MessageInf(-33554432, AppLocal.getIntString("message.cannotprintticket"), e);
+            msg.show(this);
+          } catch (TicketPrinterException e) {
+            MessageInf msg = new MessageInf(-33554432, AppLocal.getIntString("message.cannotprintticket"), e);
+            msg.show(this);
+          } 
+        } 
+      }
     private void printTicket(String sresourcename, TicketInfo ticket, Object ticketext) {
 
         String sresource = dlSystem.getResourceAsXML(sresourcename);
@@ -2067,6 +2151,10 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
 
     private void m_jEditLineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_jEditLineActionPerformed
 
+        Editar();
+
+    }//GEN-LAST:event_m_jEditLineActionPerformed
+    private void Editar() {
         int i = m_ticketlines.getSelectedIndex();
         if (i < 0) {
             Toolkit.getDefaultToolkit().beep(); // no line selected
@@ -2084,9 +2172,7 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
             }
             //}
         }
-
-    }//GEN-LAST:event_m_jEditLineActionPerformed
-
+    }
     private void m_jEnterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_jEnterActionPerformed
 
         stateTransition('\n');
@@ -2851,8 +2937,8 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
         String id = UUID.randomUUID().toString();
         try {
             new PreparedSentence(this.m_App.getSession(),
-                     "INSERT INTO RECEIPTS (ID, MONEY, DATENEW) VALUES (?, ?, ?)",
-                     SerializerWriteParams.INSTANCE
+                    "INSERT INTO RECEIPTS (ID, MONEY, DATENEW) VALUES (?, ?, ?)",
+                    SerializerWriteParams.INSTANCE
             ).exec(new DataParams() {
                 public void writeValues() throws BasicException {
                     setString(1, id);
@@ -2861,8 +2947,8 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
                 }
             });
             new PreparedSentence(this.m_App.getSession(),
-                     "INSERT INTO PAYMENTS (ID, RECEIPT, PAYMENT, TOTAL, NOTES, FORMAPAGO, PROVEEDOR) VALUES (?, ?, ?, ?, ?,?, ?)",
-                     SerializerWriteParams.INSTANCE
+                    "INSERT INTO PAYMENTS (ID, RECEIPT, PAYMENT, TOTAL, NOTES, FORMAPAGO, PROVEEDOR) VALUES (?, ?, ?, ?, ?,?, ?)",
+                    SerializerWriteParams.INSTANCE
             ).exec(new DataParams() {
                 public void writeValues() throws BasicException {
                     setString(1, UUID.randomUUID().toString());

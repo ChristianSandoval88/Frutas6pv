@@ -895,6 +895,18 @@ public CustomerInfoExt findCustomerExtById(String id)
         };
     }
 
+    public final SentenceExec getPaymentMovementInsert2() {
+                return new PreparedSentence(s
+                    , "INSERT INTO RECEIPTS (ID, MONEY, DATENEW) VALUES (?, ?, ?)"
+                    , SerializerWriteParams.INSTANCE);
+    }
+    
+    public final SentenceExec getPaymentMovementInsert3() {
+                return new PreparedSentence(s
+                    , "INSERT INTO PAYMENTS (ID, RECEIPT, PAYMENT, TOTAL, NOTES) VALUES (?, ?, ?, ?, ?)"
+                    , SerializerWriteParams.INSTANCE);
+    }
+    
     public final SentenceExec getPaymentMovementDelete() {
         return new SentenceExecTransaction(s) {
             public int execInTransaction(Object params) throws BasicException {

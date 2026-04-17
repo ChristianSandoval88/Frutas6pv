@@ -77,9 +77,9 @@ public class JRootFrame extends javax.swing.JFrame implements AppMessage {
             
             setVisible(true);                        
         } else {
-            JOptionPane.showMessageDialog(this, "No se puede conectar a la base de datos, revise que la computadora principal este encendida y conectada a internet.");
-            System.exit(0);
-            //new JFrmConfig(props).setVisible(true); // Show the configuration window.
+            //JOptionPane.showMessageDialog(this, "No se puede conectar a la base de datos, revise que la computadora principal este encendida y conectada a internet.");
+            //System.exit(0);
+            new JFrmConfig(props).setVisible(true); // Show the configuration window.
         }
     }
     

@@ -35,7 +35,7 @@ import com.openbravo.pos.ticket.TicketLineInfo;
  *
  * @author adrianromero
  */
-public class JProductLineEdit extends javax.swing.JDialog {
+public class JProductLineEditBack extends javax.swing.JDialog {
     
     private TicketLineInfo returnLine;
     private TicketLineInfo m_oLine;
@@ -43,11 +43,11 @@ public class JProductLineEdit extends javax.swing.JDialog {
     private boolean m_bpriceok;
             
     /** Creates new form JProductLineEdit */
-    private JProductLineEdit(java.awt.Frame parent, boolean modal) {
+    private JProductLineEditBack(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
     }
     /** Creates new form JProductLineEdit */
-    private JProductLineEdit(java.awt.Dialog parent, boolean modal) {
+    private JProductLineEditBack(java.awt.Dialog parent, boolean modal) {
         super(parent, modal);
     }
     
@@ -86,7 +86,7 @@ public class JProductLineEdit extends javax.swing.JDialog {
         if (m_jName.isEnabled()) {
             m_jName.activate();
         } else {
-            m_jPrice.activate();
+            m_jUnits.activate();
         }
         
         printTotals();
@@ -178,11 +178,11 @@ public class JProductLineEdit extends javax.swing.JDialog {
          
         Window window = getWindow(parent);
         
-        JProductLineEdit myMsg;
+        JProductLineEditBack myMsg;
         if (window instanceof Frame) { 
-            myMsg = new JProductLineEdit((Frame) window, true);
+            myMsg = new JProductLineEditBack((Frame) window, true);
         } else {
-            myMsg = new JProductLineEdit((Dialog) window, true);
+            myMsg = new JProductLineEditBack((Dialog) window, true);
         }
         return myMsg.init(app, oLine);
     }        
@@ -196,48 +196,28 @@ public class JProductLineEdit extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel3 = new javax.swing.JLabel();
-        m_jPriceTax = new com.openbravo.editor.JEditorCurrency();
-        m_jTaxrate = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        m_jSubtotal = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         m_jName = new com.openbravo.editor.JEditorString();
         m_jUnits = new com.openbravo.editor.JEditorDouble();
         m_jPrice = new com.openbravo.editor.JEditorCurrency();
+        m_jPriceTax = new com.openbravo.editor.JEditorCurrency();
+        m_jTaxrate = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         m_jTotal = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        m_jSubtotal = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         m_jButtonOK = new javax.swing.JButton();
         m_jButtonCancel = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         m_jKeys = new com.openbravo.editor.JEditorKeys();
-
-        jLabel3.setText(AppLocal.getIntString("label.pricetax")); // NOI18N
-
-        m_jTaxrate.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.disabledBackground"));
-        m_jTaxrate.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        m_jTaxrate.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow")), javax.swing.BorderFactory.createEmptyBorder(1, 4, 1, 4)));
-        m_jTaxrate.setOpaque(true);
-        m_jTaxrate.setPreferredSize(new java.awt.Dimension(150, 25));
-        m_jTaxrate.setRequestFocusEnabled(false);
-
-        jLabel5.setText(AppLocal.getIntString("label.tax")); // NOI18N
-
-        jLabel7.setText(AppLocal.getIntString("label.subtotalcash")); // NOI18N
-
-        m_jSubtotal.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.disabledBackground"));
-        m_jSubtotal.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        m_jSubtotal.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow")), javax.swing.BorderFactory.createEmptyBorder(1, 4, 1, 4)));
-        m_jSubtotal.setOpaque(true);
-        m_jSubtotal.setPreferredSize(new java.awt.Dimension(150, 25));
-        m_jSubtotal.setRequestFocusEnabled(false);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(AppLocal.getIntString("label.editline")); // NOI18N
@@ -254,6 +234,10 @@ public class JProductLineEdit extends javax.swing.JDialog {
         jPanel2.add(jLabel2);
         jLabel2.setBounds(10, 50, 90, 14);
 
+        jLabel3.setText(AppLocal.getIntString("label.pricetax")); // NOI18N
+        jPanel2.add(jLabel3);
+        jLabel3.setBounds(10, 110, 90, 14);
+
         jLabel4.setText(AppLocal.getIntString("label.item")); // NOI18N
         jPanel2.add(jLabel4);
         jLabel4.setBounds(10, 20, 90, 14);
@@ -263,10 +247,25 @@ public class JProductLineEdit extends javax.swing.JDialog {
         m_jUnits.setBounds(100, 50, 240, 25);
         jPanel2.add(m_jPrice);
         m_jPrice.setBounds(100, 80, 240, 25);
+        jPanel2.add(m_jPriceTax);
+        m_jPriceTax.setBounds(100, 110, 240, 25);
+
+        m_jTaxrate.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.disabledBackground"));
+        m_jTaxrate.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        m_jTaxrate.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow")), javax.swing.BorderFactory.createEmptyBorder(1, 4, 1, 4)));
+        m_jTaxrate.setOpaque(true);
+        m_jTaxrate.setPreferredSize(new java.awt.Dimension(150, 25));
+        m_jTaxrate.setRequestFocusEnabled(false);
+        jPanel2.add(m_jTaxrate);
+        m_jTaxrate.setBounds(100, 140, 210, 25);
+
+        jLabel5.setText(AppLocal.getIntString("label.tax")); // NOI18N
+        jPanel2.add(jLabel5);
+        jLabel5.setBounds(10, 140, 90, 14);
 
         jLabel6.setText(AppLocal.getIntString("label.totalcash")); // NOI18N
         jPanel2.add(jLabel6);
-        jLabel6.setBounds(10, 110, 90, 14);
+        jLabel6.setBounds(10, 200, 90, 14);
 
         m_jTotal.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.disabledBackground"));
         m_jTotal.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -275,7 +274,20 @@ public class JProductLineEdit extends javax.swing.JDialog {
         m_jTotal.setPreferredSize(new java.awt.Dimension(150, 25));
         m_jTotal.setRequestFocusEnabled(false);
         jPanel2.add(m_jTotal);
-        m_jTotal.setBounds(100, 110, 210, 25);
+        m_jTotal.setBounds(100, 200, 210, 25);
+
+        jLabel7.setText(AppLocal.getIntString("label.subtotalcash")); // NOI18N
+        jPanel2.add(jLabel7);
+        jLabel7.setBounds(10, 170, 90, 14);
+
+        m_jSubtotal.setBackground(javax.swing.UIManager.getDefaults().getColor("TextField.disabledBackground"));
+        m_jSubtotal.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        m_jSubtotal.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createLineBorder(javax.swing.UIManager.getDefaults().getColor("Button.darkShadow")), javax.swing.BorderFactory.createEmptyBorder(1, 4, 1, 4)));
+        m_jSubtotal.setOpaque(true);
+        m_jSubtotal.setPreferredSize(new java.awt.Dimension(150, 25));
+        m_jSubtotal.setRequestFocusEnabled(false);
+        jPanel2.add(m_jSubtotal);
+        m_jSubtotal.setBounds(100, 170, 210, 25);
 
         jPanel5.add(jPanel2, java.awt.BorderLayout.CENTER);
 
