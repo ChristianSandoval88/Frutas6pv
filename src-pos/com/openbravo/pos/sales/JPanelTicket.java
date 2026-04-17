@@ -1217,12 +1217,6 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
                                     ticket.setProperty("metodoPago", "Transferencia");
                                 }
                             }
-                                if ((ticket.getLine(0).getProductName().equalsIgnoreCase("prestamo") &&
-                                        !((PaymentInfo) ticket.getPayments().get(0)).getName().equalsIgnoreCase("debt")||
-                                        ticket.getPayments().size()>1)) {
-                                    JOptionPane.showMessageDialog(this, "Para realizar un prestamo debe seleccionar A cuenta como metodo de pago. NO se realizó la venta.");
-                                    return false;
-                                }
                         }
                         /*ticket.setPayments(paymentdialog.getSelectedPayments());
                             if (TicketInfo.RECEIPT_NORMAL!=ticket.getTicketType()
