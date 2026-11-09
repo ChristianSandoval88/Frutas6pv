@@ -709,8 +709,8 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
                     
                 }
                 else {*/
-                if (sCode.length() == 13 && sCode.startsWith("20")) {
-                    int cod = Integer.parseInt(sCode.substring(1, 7));
+                if (sCode.length() == 13 && sCode.startsWith("200")) {
+                    int cod = Integer.parseInt(sCode.substring(1, 6));
                     String codigo = Integer.toString(cod);
                     //double precio = Double.parseDouble(sCode.substring(7, 12))/100;
                     double mul = Double.parseDouble(sCode.substring(7, 12)) / 100;
@@ -1248,9 +1248,9 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
                             try {
 
                                 dlSales.saveTicket(ticket, m_App.getInventoryLocation(), activeCash);
-                                printTicket("Printer.Ticket", ticket, ticketext);
+                                printTicket("Printer.TicketNew", ticket, ticketext);
                                 if (paymentdialog.isPrintSelected()) {
-                                    printTicket("Printer.Ticket", ticket, ticketext);
+                                    printTicket("Printer.TicketNew", ticket, ticketext);
                                 }
 
                                 if (ticket.getLine(0).getProductName().equalsIgnoreCase("prestamo")&&ticket.getCustomer().getName().toLowerCase().contains("empleado")) {
