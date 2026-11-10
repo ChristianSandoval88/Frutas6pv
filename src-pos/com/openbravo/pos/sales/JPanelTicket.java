@@ -709,8 +709,8 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
                     
                 }
                 else {*/
-                if (sCode.length() == 13 && sCode.startsWith("200")) {
-                    int cod = Integer.parseInt(sCode.substring(1, 6));
+                if (sCode.length() == 13 && sCode.startsWith("20")) {
+                    int cod = Integer.parseInt(sCode.substring(1, 7));
                     String codigo = Integer.toString(cod);
                     //double precio = Double.parseDouble(sCode.substring(7, 12))/100;
                     double mul = Double.parseDouble(sCode.substring(7, 12)) / 100;

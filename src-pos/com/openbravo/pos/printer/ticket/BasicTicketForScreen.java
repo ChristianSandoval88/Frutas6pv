@@ -24,9 +24,11 @@ import java.awt.geom.AffineTransform;
 
 public class BasicTicketForScreen extends BasicTicket {
 
-    private static Font BASEFONT = new Font("Monospaced", Font.PLAIN, 12).deriveFont(AffineTransform.getScaleInstance(1.0, 1.40));
-    private static int FONTHEIGHT = 20;
-    private static double IMAGE_SCALE = 1.0;
+    // Se cambia la letra del ticket en pantalla a Arial 12 (antes Monospaced 12 escalada 1.40)
+    // private static Font BASEFONT = new Font("Monospaced", Font.PLAIN, 12).deriveFont(AffineTransform.getScaleInstance(1.0, 1.40));
+    private static Font BASEFONT = new Font("Courier New", Font.PLAIN, 9).deriveFont(AffineTransform.getScaleInstance(1.0, 1.20));
+        private static int FONTHEIGHT = 12;
+        private static double IMAGE_SCALE = 0.65;
 
     @Override
     protected Font getBaseFont() {
