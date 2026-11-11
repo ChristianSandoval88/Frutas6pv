@@ -25,6 +25,10 @@ report.addQBFFilter(new com.openbravo.pos.reports.JParamsCustomer());
 report.addParameter("PEOPLE.ID");
 report.addQBFFilter(new com.openbravo.pos.reports.JParamsLocationWithFirst());
 
+// Filtro por la caja donde se cobro el ticket (propiedad "caja" guardada en TICKETS.ACTIVECASH)
+report.addParameter("TICKETS.ACTIVECASH");
+report.addQBFFilter(new com.openbravo.pos.reports.JParamsCaja());
+
 report.addField("FECHA", com.openbravo.data.loader.Datas.TIMESTAMP);
 report.addField("PAGO", com.openbravo.data.loader.Datas.STRING);
 report.addField("TOTAL", com.openbravo.data.loader.Datas.DOUBLE);

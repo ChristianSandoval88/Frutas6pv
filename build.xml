@@ -220,6 +220,8 @@
              compress="true"
              basedir="${basedir}/build/zip">
             <fileset dir="${locales}"/>
+            <!-- Se incluyen los reportes (.bs/.jrxml) para que esten en el classpath con java -jar -->
+            <fileset dir="${reports}"/>
             <manifest>
                 <attribute name="Implementation-Vendor" value="Openbravo SL"/>
                 <attribute name="Implementation-Title" value="Openbravo Network POS"/>
