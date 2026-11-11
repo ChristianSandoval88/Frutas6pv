@@ -340,7 +340,7 @@
                         <StringItem index="4" value="CAJA4"/>
                         <StringItem index="5" value="CAJA5"/>
                         <StringItem index="6" value="CAJA6"/>
-                        <StringItem index="7" value=" "/>
+                        <StringItem index="7" value="CAJA7"/>
                       </StringArray>
                     </Property>
                   </Properties>

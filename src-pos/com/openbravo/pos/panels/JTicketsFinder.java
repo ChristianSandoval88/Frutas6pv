@@ -387,7 +387,7 @@ public class JTicketsFinder extends JDialog implements EditorCreator {
             JTicketsFinder.this.btnCustomerActionPerformed(evt);
           }
         });
-    this.m_jreason.setModel(new DefaultComboBoxModel<>(new String[] { " ", "CAJA1", "CAJA2", "CAJA3", "CAJA4", "CAJA5", "CAJA6", "CAJA7" }));
+    this.m_jreason.setModel(new DefaultComboBoxModel<>(new String[] { " ", "CAJA1", "CAJA2", "CAJA3", "CAJA4", "CAJA5", "CAJA6", "CAJA7", "CAJA8" }));
     this.jLabel2.setText("Caja");
     this.m_jreason1.setModel(new DefaultComboBoxModel<>(new String[] { " ", "TARJETA", "TRANSFERENCIA" }));
     this.jLabel5.setText("Método");
