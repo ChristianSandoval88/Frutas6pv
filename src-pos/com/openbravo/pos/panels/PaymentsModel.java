@@ -357,7 +357,7 @@ String dateNow = formatter.format(currentDate.getTime());
             p.m_lproductsalesR = productsR;
         }
         
-        valtickets = (Object[])(new StaticSentence(app.getSession(), "SELECT COUNT(*), SUM(PAYMENTS.TOTAL) FROM PAYMENTS, RECEIPTS WHERE PAYMENTS.RECEIPT = RECEIPTS.ID AND RECEIPTS.MONEY = ? AND PAYMENTS.PAYMENT<>'magcard' AND PAYMENTS.PAYMENT<>'cheque' AND PAYMENTS.PAYMENT<>'debt' AND PAYMENTS.PAYMENT<>'debtpaid'  AND PAYMENTS.PAYMENT<>'debtpaid2'", SerializerWriteString.INSTANCE, (SerializerRead)new SerializerReadBasic(new Datas[] { Datas.INT, Datas.DOUBLE }))).find(app.getActiveCashIndex());
+        valtickets = (Object[])(new StaticSentence(app.getSession(), "SELECT COUNT(*), SUM(PAYMENTS.TOTAL) FROM PAYMENTS, RECEIPTS WHERE PAYMENTS.RECEIPT = RECEIPTS.ID AND RECEIPTS.MONEY = ? AND PAYMENTS.PAYMENT IN ('cashin', 'cashout', 'cash', 'cashrefund')", SerializerWriteString.INSTANCE, (SerializerRead)new SerializerReadBasic(new Datas[] { Datas.INT, Datas.DOUBLE }))).find(app.getActiveCashIndex());
     if (valtickets == null) {
       p.m_iPayments = new Integer(0);
       p.m_dPaymentsTotal = new Double(0.0D);
